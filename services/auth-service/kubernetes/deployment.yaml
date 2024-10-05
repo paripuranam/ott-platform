@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: auth-service
-        image: your-docker-registry/auth-service:latest
+        image: paripuranam/auth-service:latest
         ports:
         - containerPort: 3000

@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: streaming-service
-        image: your-docker-registry/streaming-service:latest
+        image: paripuranam/streaming-service:latest
         ports:
         - containerPort: 3002
