@@ -1,0 +1,22 @@
+# docker-compose.yaml
+version: '3'
+services:
+  auth-service:
+    build: ./services/auth-service
+    ports:
+      - "3000:3000"
+  
+  catalog-service:
+    build: ./services/catalog-service
+    ports:
+      - "3001:3001"
+  
+  streaming-service:
+    build: ./services/streaming-service
+    ports:
+      - "3002:3002"
+
+  subscription-service:
+    build: ./services/subscription-service
+    ports:
+      - "3003:3003"

@@ -1,0 +1,73 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
+        DOCKER_REGISTRY = 'paripuranam'
+        IMAGE_VERSION = "v${env.BUILD_NUMBER}"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/your-repo/ott-platform.git'
+            }
+        }
+
+        stage('Build and Push Docker Images') {
+            parallel {
+                stage('Auth Service') {
+                    steps {
+                        script {
+                            dockerImage = docker.build("${DOCKER_REGISTRY}/auth-service:${IMAGE_VERSION}", "./services/auth-service")
+                            docker.withRegistry("https://${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS_ID}") {
+                                dockerImage.push()
+                            }
+                        }
+                    }
+                }
+
+                stage('Catalog Service') {
+                    steps {
+                        script {
+                            dockerImage = docker.build("${DOCKER_REGISTRY}/catalog-service:${IMAGE_VERSION}", "./services/catalog-service")
+                            docker.withRegistry("https://${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS_ID}") {
+                                dockerImage.push()
+                            }
+                        }
+                    }
+                }
+
+                stage('Catalog Service') {
+                    steps {
+                        script {
+                            dockerImage = docker.build("${DOCKER_REGISTRY}/catalog-service:${IMAGE_VERSION}", "./services/catalog-service")
+                            docker.withRegistry("https://${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS_ID}") {
+                                dockerImage.push()
+                            }
+                        }
+                    }
+                }
+
+                stage('Catalog Service') {
+                    steps {
+                        script {
+                            dockerImage = docker.build("${DOCKER_REGISTRY}/catalog-service:${IMAGE_VERSION}", "./services/catalog-service")
+                            docker.withRegistry("https://${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS_ID}") {
+                                dockerImage.push()
+                            }
+                        }
+                    }
+                }
+
+                // Repeat for Streaming and Subscription Services...
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}

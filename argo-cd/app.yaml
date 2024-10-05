@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ott-platform
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/your-repo/ott-platform.git'
+    targetRevision: main
+    path: 'services'
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  sources:
+    - path: 'services/auth-service/kubernetes'
+    - path: 'services/catalog-service/kubernetes'
+    - path: 'services/streaming-service/kubernetes'
+    - path: 'services/subscription-service/kubernetes'
