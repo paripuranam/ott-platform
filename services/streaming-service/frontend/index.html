@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            margin: 20px;
+        }
+        #search-container {
+            margin: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        #search-input {
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            width: 300px;
+        }
+        #search-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #e50914;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        #results {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .video-box {
+            background-color: #1f1f1f;
+            border-radius: 8px;
+            margin: 10px;
+            padding: 10px;
+            width: 200px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .video-box:hover {
+            transform: scale(1.05);
+        }
+        .video-title {
+            font-weight: bold;
+        }
+        .movie-suggestion {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+            width: 100%;
+        }
+        .movie-suggestion .movie-box {
+            background: #1f1f1f;
+            border-radius: 10px;
+            width: 150px;
+            margin: 10px;
+            padding: 10px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .movie-suggestion .movie-box:hover {
+            transform: scale(1.05);
+        }
+    </style>
+    <script>
+        let token = '';
+
+        // Function to log in and get the JWT
+        async function login() {
+            const response = await fetch('http://localhost:5000/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userId: 'exampleUser' }) 
+            });
+            const data = await response.json();
+            token = data.token;
+        }
+
+        // Function to search for videos
+        async function searchVideos() {
+            const filename = document.getElementById('search-input').value.trim();
+
+            if (!filename) {
+                alert('Please enter a search term.'); 
+                return; 
+            }
+
+            const response = await fetch('http://localhost:5000/api/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token,
+                },
+                body: JSON.stringify({ filename }),
+            });
+            
+            if (!response.ok) {
+                console.error("Error:", response.statusText);
+            }
+
+            const videos = await response.json();
+            displayResults(videos);
+        }
+
+        // Function to display video search results
+        function displayResults(videos) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = ''; 
+
+            if (Array.isArray(videos) && videos.length) {
+                videos.forEach(video => {
+                    const videoElement = document.createElement('div');
+                    videoElement.className = 'video-box';
+                    videoElement.innerHTML = `
+                        <div class="video-title">${video.filename}</div>
+                        <div>Upload Date: ${new Date(video.uploadDate).toLocaleDateString()}</div>
+                        <a href="http://localhost:8081/db/test/uploads.files/${video._id}" target="_blank">Stream Video</a>
+                    `;
+                    resultsDiv.appendChild(videoElement);
+                });
+            } else {
+                resultsDiv.textContent = 'No videos found.';
+            }
+        }
+
+        // Function to display random movie suggestions
+        function displayRandomMovies() {
+            const movies = [
+                "Inception",
+                "The Terminator",
+                "Avengers: Endgame",
+                "The Matrix",
+                "Interstellar",
+                "Jurassic Park",
+                "Titanic",
+                "Avatar",
+                "The Dark Knight",
+                "Pulp Fiction"
+            ];
+
+            const suggestionDiv = document.getElementById('movie-suggestions');
+            movies.forEach(movie => {
+                const movieElement = document.createElement('div');
+                movieElement.className = 'movie-box';
+                movieElement.innerHTML = `<div class="movie-title">${movie}</div>`;
+                suggestionDiv.appendChild(movieElement);
+            });
+        }
+
+        // Call login and display random movies on page load
+        window.onload = () => {
+            login();
+            displayRandomMovies();
+        };
+    </script>
+</head>
+<body>
+    <h1>Video Search</h1>
+    <div id="search-container">
+        <input type="text" id="search-input" placeholder="Search for videos...">
+        <button id="search-button" onclick="searchVideos()">Search</button>
+    </div>
+    <div id="results"></div>
+
+    <div class="movie-suggestion" id="movie-suggestions"></div>
+</body>
+</html>

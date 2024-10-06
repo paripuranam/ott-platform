@@ -1,41 +1,39 @@
 const express = require('express');
 const multer = require('multer');
 const AWS = require('aws-sdk');
-const { v4: uuidv4 } = require('uuid');
 
 const app = express();
+const PORT = process.env.PORT || 3004;
 
-// Setup AWS S3
+// Configure AWS S3
 const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: 'your-region',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION
 });
 
-const upload = multer({ storage: multer.memoryStorage() });
+// Configure multer for file uploads
+const upload = multer({ dest: 'uploads/' });
 
-app.post('/upload', upload.single('video'), async (req, res) => {
-    try {
-        const file = req.file;
-        const fileName = `${uuidv4()}-${file.originalname}`;
+app.post('/upload', upload.single('video'), (req, res) => {
+  const file = req.file;
+  
+  const params = {
+    Bucket: process.env.AWS_S3_BUCKET,
+    Key: file.originalname,
+    Body: file.buffer
+  };
 
-        // Upload video to S3
-        const params = {
-            Bucket: 'your-s3-bucket-name',
-            Key: fileName,
-            Body: file.buffer,
-            ContentType: file.mimetype,
-        };
-
-        const data = await s3.upload(params).promise();
-        res.json({
-            message: 'Video uploaded successfully!',
-            videoUrl: data.Location,  // S3 URL of the uploaded video
-        });
-    } catch (error) {
-        console.error('Error uploading video: ', error);
-        res.status(500).json({ message: 'Failed to upload video' });
+  s3.upload(params, (err, data) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send(err);
     }
+
+    res.status(200).send(`File uploaded successfully. ${data.Location}`);
+  });
 });
 
-app.listen(3004, () => console.log('Upload service running on port 3004'));
+app.listen(PORT, () => {
+  console.log(`Upload Service running on port ${PORT}`);
+});

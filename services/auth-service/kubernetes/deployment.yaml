@@ -17,3 +17,8 @@ spec:
         image: paripuranam/auth-service:latest
         ports:
         - containerPort: 3000
+        env:
+        - name: MONGODB_URI
+          value: "mongodb://mongo:27017/your-database-name"
+        - name: JWT_SECRET
+          value: "your_jwt_secret"

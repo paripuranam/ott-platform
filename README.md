@@ -104,6 +104,6 @@ Ensure you have the following tools installed:
 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-repo/ott-platform.git
+git clone https://github.com/paripuranam/ott-platform.git
 cd ott-platform
 ```

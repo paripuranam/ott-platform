@@ -1,22 +1,62 @@
-# docker-compose.yaml
-version: '3'
+version: '3.8'
+
 services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+  
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_BASICAUTH: false
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo
+
   auth-service:
     build: ./services/auth-service
+    environment:
+      MONGODB_URI: mongodb://root:example@mongo:27017
+      JWT_SECRET: s3cure$tr0ng!JWT$Secret123
+    depends_on:
+      - mongo
     ports:
       - "3000:3000"
-  
-  catalog-service:
-    build: ./services/catalog-service
+    
+  auth-frontend:
+    build:
+      context: ./services/auth-service/frontend
+    container_name: auth-frontend
+    restart: always
     ports:
-      - "3001:3001"
-  
+      - "8080:80"
+
   streaming-service:
     build: ./services/streaming-service
+    container_name: streaming-service 
+    environment:
+      MONGODB_URI: mongodb://root:example@mongo:27017  
     ports:
-      - "3002:3002"
+      - "5000:5000"
 
-  subscription-service:
-    build: ./services/subscription-service
+  streaming-frontend:
+    build:
+      context: ./services/streaming-service/frontend
+    container_name: streaming-frontend
+    restart: always
+    depends_on:
+      - streaming-service
     ports:
-      - "3003:3003"
+      - "8000:80"
