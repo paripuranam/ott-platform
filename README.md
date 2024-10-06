@@ -60,7 +60,9 @@ The system is broken down into several microservices:
 OTT-Platform/
 ├── auth-service/
 │   ├── Dockerfile
-│   ├── src/
+│   ├── frontend/
+|   |   ├── Dockerfile
+|   |    ├── index.html
 │   ├── kubernetes/
 │   └── Jenkinsfile
 ├── catalog-service/
@@ -70,7 +72,9 @@ OTT-Platform/
 │   └── Jenkinsfile
 ├── streaming-service/
 │   ├── Dockerfile
-│   ├── src/
+│   ├── frontend/
+|   |   ├── Dockerfile
+|   |    ├── index.html
 │   ├── kubernetes/
 │   └── Jenkinsfile
 ├── subscription-service/
