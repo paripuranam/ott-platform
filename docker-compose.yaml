@@ -6,8 +6,8 @@ services:
     container_name: mongo
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     ports:
       - "27017:27017"
   
@@ -16,10 +16,10 @@ services:
     container_name: mongo-express
     restart: always
     environment:
-      ME_CONFIG_MONGODB_SERVER: mongo
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_BASICAUTH: false
+      ME_CONFIG_MONGODB_SERVER: ${ME_CONFIG_MONGODB_SERVER}
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${ME_CONFIG_MONGODB_ADMINUSERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${ME_CONFIG_MONGODB_ADMINPASSWORD}
+      ME_CONFIG_BASICAUTH: ${ME_CONFIG_BASICAUTH}
     ports:
       - "8081:8081"
     depends_on:
@@ -28,8 +28,8 @@ services:
   auth-service:
     build: ./services/auth-service
     environment:
-      MONGODB_URI: mongodb://root:example@mongo:27017
-      JWT_SECRET: s3cure$tr0ng!JWT$Secret123
+      MONGODB_URI: ${MONGODB_URI}
+      JWT_SECRET: ${JWT_SECRET}
     depends_on:
       - mongo
     ports:
@@ -47,7 +47,7 @@ services:
     build: ./services/streaming-service
     container_name: streaming-service 
     environment:
-      MONGODB_URI: mongodb://root:example@mongo:27017  
+      MONGODB_URI: ${MONGODB_URI}
     ports:
       - "5000:5000"
 
