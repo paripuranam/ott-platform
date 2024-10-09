@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+        DOCKER_USERNAME = "paripuranam"
         IMAGE_VERSION = "v${env.BUILD_NUMBER}"
     }
 
