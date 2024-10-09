@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+        DOCKER_USERNAME = "paripuranam"
         IMAGE_VERSION = "v${env.BUILD_NUMBER}"
     }
 
@@ -34,7 +35,7 @@ pipeline {
                     steps {
                         script {
                             echo "Building Docker image for Auth Service"
-                            dockerImage = docker.build("paripuranam/auth-service:${IMAGE_VERSION}", "./services/auth-service")
+                            dockerImage = docker.build("${DOCKER_USERNAME}/auth-service:${IMAGE_VERSION}", "./services/auth-service")
                             echo "Pushing Docker image for Auth Service"
                             dockerImage.push()
                         }
@@ -45,7 +46,7 @@ pipeline {
                     steps {
                         script {
                             echo "Building Docker image for Auth Frontend"
-                            dockerImage = docker.build("paripuranam/auth-frontend:${IMAGE_VERSION}", "./services/auth-service/frontend")
+                            dockerImage = docker.build("${DOCKER_USERNAME}/auth-frontend:${IMAGE_VERSION}", "./services/auth-service/frontend")
                             echo "Pushing Docker image for Auth Frontend"
                             dockerImage.push()
                         }
