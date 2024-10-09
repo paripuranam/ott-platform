@@ -217,7 +217,3 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 ## License
 
 This project is licensed under the MIT License.
-
----
-
-This script organizes the content of the platform, providing a clear and comprehensive guide for users and developers alike.
