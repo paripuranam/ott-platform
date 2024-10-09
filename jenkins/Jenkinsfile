@@ -24,7 +24,7 @@ pipeline {
                         """
                     }
                     echo "Successfully logged in to Docker Hub"
-                    echo "Image Version: ${IMAGE_VERSION}"  // Debugging
+                    echo "Image Version: ${IMAGE_VERSION}"  
                 }
             }
         }
