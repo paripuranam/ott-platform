@@ -51,14 +51,6 @@ pipeline {
                         }
                     }
                 }
-                stage('streaming-service'){
-                    steps{
-                        script{
-                            dockerImage = docker.build("${DOCKER_USERNAME}/streaming-service:${IMAGE_VERSION}", "./service/streaming-service")
-                            dockerImage.push()
-                        }
-                    }
-                }
             }
         }
     }
