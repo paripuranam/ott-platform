@@ -6,7 +6,20 @@ spec:
   selector:
     app: streaming-service
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 3002
-  type: LoadBalancer
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streaming-frontend
+spec:
+  selector:
+    app: streaming-frontend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: NodePort

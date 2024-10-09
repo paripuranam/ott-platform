@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-service-configmap
+data:
+  mongodb-url: mongodb-service
+  mongodb-uri: mongodb://root:example@mongodb-service:27017

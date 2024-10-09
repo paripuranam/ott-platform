@@ -1,3 +1,36 @@
+#mongodb service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service
+spec:
+  selector:
+    app: mongodb
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+
+
+---
+#mongo-express service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-express-service
+spec:
+  selector:
+    app: mongo-express
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 8081
+    targetPort: 8081
+    nodePort: 31234
+  
+
+---
+#auth-service
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,6 +40,22 @@ spec:
     app: auth-service
   ports:
     - protocol: TCP
-      port: 80
+      port: 3000
       targetPort: 3000
+
+
+---
+#auth-frontend service
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-frontend-service
+spec:
+  selector:
+    app: mongodb
   type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 31235

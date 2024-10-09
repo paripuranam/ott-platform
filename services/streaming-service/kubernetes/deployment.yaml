@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: streaming-service
+  labels:
+    app: streaming-service
 spec:
   replicas: 2
   selector:
@@ -16,17 +18,26 @@ spec:
       - name: streaming-service
         image: paripuranam/streaming-service:latest
         ports:
-        - containerPort: 3002
+        - containerPort: 5000
 ---
-apiVersion: v1
-kind: Service
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: streaming-service
-spec:
-  selector:
+  name: streaming-frontend
+  labels:
     app: streaming-service
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 3002
-  type: NodePort
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: streaming-frontend
+  template:
+    metadata:
+      labels:
+        app: streaming-frontend
+    spec:
+      containers:
+      - name: streaming-frontend
+        image: paripuranam/streaming-frontend:latest
+        ports:
+        - containerPort: 80

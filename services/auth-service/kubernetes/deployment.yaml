@@ -1,9 +1,87 @@
+# MongoDB Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+  labels:
+    app: mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo
+        ports:
+        - containerPort: 27017
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: mongodb-username
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: mongodb-password
+
+---
+# Mongo Express Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-express
+  labels:
+    app: mongo-express
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-express
+  template:
+    metadata:
+      labels:
+        app: mongo-express
+    spec:
+      containers:
+      - name: mongo-express
+        image: mongo-express
+        ports:
+        - containerPort: 8081
+        env:
+        - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: mongodb-username
+        - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: mongodb-password 
+        - name: ME_CONFIG_MONGODB_SERVER
+          valueFrom:
+            configMapKeyRef:
+              name: auth-service-configmap
+              key: mongodb-url
+        - name: ME_CONFIG_BASICAUTH
+          value: "false"
+
+---
+# Auth Service Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: auth-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: auth-service
@@ -14,11 +92,45 @@ spec:
     spec:
       containers:
       - name: auth-service
-        image: paripuranam/auth-service:latest
+        image: paripuranam/auth-service:1.0  
         ports:
         - containerPort: 3000
         env:
         - name: MONGODB_URI
-          value: "mongodb://mongo:27017/your-database-name"
+          valueFrom:
+            configMapKeyRef:
+              name: auth-service-configmap
+              key: mongodb-uri
         - name: JWT_SECRET
-          value: "your_jwt_secret"
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: jwt-secret 
+---
+
+
+---
+
+# Auth Frontend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-frontend
+  labels:
+    app: auth-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth-frontend
+  template:
+    metadata:
+      labels:
+        app: auth-frontend
+    spec:
+      containers:
+      - name: auth-frontend
+        image: paripuranam/auth-frontend
+        ports:
+        - containerPort: 80
+

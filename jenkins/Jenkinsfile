@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'ac9cb270-d7f0-4b77-8b4d-1a9af0dfcddf'
+        DOCKER_CREDENTIALS_ID = '3b76daec-e9e3-499a-95b5-6cc22c81020d'
         DOCKER_REGISTRY = 'paripuranam'
         IMAGE_VERSION = "v${env.BUILD_NUMBER}"
     }
@@ -27,10 +27,10 @@ pipeline {
                     }
                 }
 
-                stage('Catalog Service') {
+                stage('Auth frontend') {
                     steps {
                         script {
-                            dockerImage = docker.build("${DOCKER_REGISTRY}/catalog-service:${IMAGE_VERSION}", "./services/catalog-service")
+                            dockerImage = docker.build("${DOCKER_REGISTRY}/auth-frontend:${IMAGE_VERSION}", "./services/auth-service/frontend")
                             docker.withRegistry("https://${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS_ID}") {
                                 dockerImage.push()
                             }
@@ -38,27 +38,27 @@ pipeline {
                     }
                 }
 
-                stage('streaming service') {
-                    steps {
-                        script {
-                            dockerImage = docker.build("${DOCKER_REGISTRY}/catalog-service:${IMAGE_VERSION}", "./services/streaming-service")
-                            docker.withRegistry("https://${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS_ID}") {
-                                dockerImage.push()
-                            }
-                        }
-                    }
-                }
+                // stage('streaming service') {
+                //     steps {
+                //         script {
+                //             dockerImage = docker.build("${DOCKER_REGISTRY}/streaming-service:${IMAGE_VERSION}", "./services/streaming-service")
+                //             docker.withRegistry("https://${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS_ID}") {
+                //                 dockerImage.push()
+                //             }
+                //         }
+                //     }
+                // }
 
-                stage('subscription Service') {
-                    steps {
-                        script {
-                            dockerImage = docker.build("${DOCKER_REGISTRY}/catalog-service:${IMAGE_VERSION}", "./services/subscription-service")
-                            docker.withRegistry("https://${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS_ID}") {
-                                dockerImage.push()
-                            }
-                        }
-                    }
-                }
+                // stage('streaming frontend') {
+                //     steps {
+                //         script {
+                //             dockerImage = docker.build("${DOCKER_REGISTRY}/streaming-frontend:${IMAGE_VERSION}", "./services/streaming-frontend")
+                //             docker.withRegistry("https://${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS_ID}") {
+                //                 dockerImage.push()
+                //             }
+                //         }
+                //     }
+                // }
             }
         }
     }
