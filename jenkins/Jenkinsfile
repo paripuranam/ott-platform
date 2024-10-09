@@ -28,7 +28,7 @@ pipeline {
                 }
             }
         }
-
+        // Auth service staging
         stage('Build and Push Docker Images') {
             parallel {
                 stage('Auth Service') {
@@ -41,7 +41,7 @@ pipeline {
                         }
                     }
                 }
-
+                // Auth frontend staging
                 stage('Auth Frontend') {
                     steps {
                         script {
