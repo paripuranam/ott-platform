@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USERNAME = 'paripuranam'
-        DOCKER_PASSWORD = 'Pari104607@'
+        DOCKER_USERNAME = 'cGFyaXB1cmFuYW0='
+        DOCKER_PASSWORD = 'UGFyaTEwNDYwN0A='
         IMAGE_VERSION = "v${env.BUILD_NUMBER}"
     }
 
