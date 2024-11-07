@@ -19,7 +19,7 @@ pipeline {
                 script {
                     echo "Logging into Docker Hub using hardcoded credentials"
                     sh """
-                        echo 'your-docker-password' | docker login -u 'your-docker-username' --password-stdin
+                        echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
                     """
                     echo "Successfully logged in to Docker Hub"
                 }
