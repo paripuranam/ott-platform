@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USERNAME = "paripuranam"
+        DOCKER_USERNAME = 'paripuranam'
+        DOCKER_PASSWORD = 'Pari104607@'
         IMAGE_VERSION = "v${env.BUILD_NUMBER}"
     }
 
@@ -13,18 +14,14 @@ pipeline {
             }
         }
 
-        stage('Login to Docker Hub') {
+        stage('Docker Login') {
             steps {
                 script {
-                    echo "Logging into Docker Hub using stored credentials"
-                    // Authenticate to Docker Hub using credentials stored in Jenkins
-                    withCredentials([usernamePassword(credentialsId: 'ccdfc633-7ae3-4184-8663-d81ac2d84bd4', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_ACCESS_TOKEN')]) {
-                        sh """
-                            echo ${DOCKER_ACCESS_TOKEN} | docker login -u ${DOCKER_USERNAME} --password-stdin
-                        """
-                    }
+                    echo "Logging into Docker Hub using hardcoded credentials"
+                    sh """
+                        echo 'your-docker-password' | docker login -u 'your-docker-username' --password-stdin
+                    """
                     echo "Successfully logged in to Docker Hub"
-                    echo "Image Version: ${IMAGE_VERSION}"  
                 }
             }
         }
