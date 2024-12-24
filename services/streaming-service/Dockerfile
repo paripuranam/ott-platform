@@ -1,6 +1,6 @@
 
 # Dockerfile for auth-service
-FROM node:20
+FROM node:20.18.1-bookworm-slim
 
 # Set the working directory
 WORKDIR /usr/src/app
