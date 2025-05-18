@@ -1,6 +1,6 @@
 
 # Dockerfile for auth-service
-FROM node:20.18.1-alpine3.20
+FROM node:20.19.2-alpine3.20
 
 # Set the working directory
 WORKDIR /usr/src/app
